@@ -126,7 +126,7 @@
 
   function actualizarTextoConfig() {
     configTexto.innerText =
-      `Tiempo: ${config.tiempoTotal}s | Secuencia: ${config.longitud} | Colores: ${config.cantColores} | Visible: ${config.tiempoVisible}s | Repetidos: ${config.permitirRepetidos ? "Sí" : "No"} | Fondo: ${config.modoFondo === "light" ? "Blanco" : "Negro"}`;
+      `Tiempo: ${config.tiempoTotal} seg | Secuencia: ${config.longitud} | Colores: ${config.cantColores} | Visible: ${config.tiempoVisible} seg | Repetidos: ${config.permitirRepetidos ? "Sí" : "No"} | Fondo: ${config.modoFondo === "light" ? "Blanco" : "Negro"}`;
   }
 
   /* =========================
