@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <title>Memoria de Trabajo</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<div class="contenedor">
+
+  <!-- HEADER -->
+  <div class="header">
+    <img src="logo3_sf.png" class="logo" alt="logo">
+    <div class="header-text">
+      <h1>Entrenamiento de Memoria de Trabajo</h1>
+
+      <div class="config-actual">
+        <span id="configTexto"></span>
+        <button id="btnToggleConfig" class="btn-principal">
+          Configuración
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- PANEL CONFIG -->
+  <div id="configPanel" class="config-box oculto">
+    <div class="config-grid">
+
+      <div class="campo">
+        <label>Tiempo total (seg)</label>
+        <input id="tiempoTotal" type="number" min="10">
+      </div>
+
+      <div class="campo">
+        <label>Largo secuencia</label>
+        <input id="longitud" type="number" min="2" max="20">
+      </div>
+
+      <div class="campo">
+        <label>Cant colores</label>
+        <input id="cantColores" type="number" min="3" max="10">
+      </div>
+
+      <div class="campo">
+        <label>Seg visible</label>
+        <input id="tiempoVisible" type="number" min="1" max="10">
+      </div>
+
+      <div class="campo">
+        <label>
+          <input id="permitirRepetidos" type="checkbox">
+          Permitir repetición
+        </label>
+      </div>
+
+      <div class="campo">
+        <label>Modo fondo</label>
+        <select id="modoFondo">
+          <option value="light">Blanco</option>
+          <option value="dark">Negro</option>
+        </select>
+      </div>
+
+    </div>
+
+    <div class="botones">
+      <button id="btnGuardarConfig" class="btn-principal">
+        Guardar configuración
+      </button>
+    </div>
+  </div>
+
+  <!-- CONTROLES -->
+  <div class="controles">
+    <label>Nombre</label>
+    <input id="nombre" maxlength="20" placeholder="anonimo">
+    <button id="btnAccion" class="btn-principal">Iniciar</button>
+  </div>
+
+  <div class="hud">
+    Tiempo: <span id="tiempo">0</span> |
+    Puntaje: <span id="puntaje">0</span>
+  </div>
+
+  <div class="juego">
+    <h3>Secuencia a memorizar</h3>
+    <div id="filaSecuencia" class="fila"></div>
+
+    <h3>Tu secuencia</h3>
+    <p>Doble click o touch largo para borrar</p>
+    <div id="filaJugador" class="fila"></div>
+
+    <h3>Colores disponibles</h3>
+    <div id="tableroColores" class="fila"></div>
+  </div>
+
+  <!-- CONTROL RANKING -->
+  <div class="ranking-control">
+    <label>
+      <input type="checkbox" id="chkRanking" checked>
+      Mostrar últimos 10
+    </label>
+  </div>
+
+  <div id="rankingContainer">
+    <h3>Últimos 10</h3>
+    <table class="tabla">
+      <thead>
+        <tr><th>Nombre</th><th>Puntaje</th></tr>
+      </thead>
+      <tbody id="ranking"></tbody>
+    </table>
+  </div>
+
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>

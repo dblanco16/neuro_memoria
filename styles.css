@@ -1,0 +1,170 @@
+body{
+  font-family: Arial, sans-serif;
+  margin:0;
+  transition:background 0.3s, color 0.3s;
+}
+
+body.light{
+  background:white;
+  color:#111;
+}
+
+body.dark{
+  background:#111;
+  color:white;
+}
+
+body.dark .logo{
+  filter: drop-shadow(0 0 10px rgba(255,255,255,0.6));
+}
+
+.contenedor{
+  max-width:1100px;
+  margin:auto;
+  padding:30px 20px;
+}
+
+.header{
+  display:flex;
+  align-items:center;
+  gap:30px;
+  margin-bottom:25px;
+}
+
+.logo{
+  height:160px;
+}
+
+.header-text{
+  flex:1;
+}
+
+.config-actual{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-top:10px;
+  font-size:14px;
+  gap:12px;
+}
+
+.config-box{
+  padding:20px;
+  border-radius:10px;
+  margin-bottom:20px;
+}
+
+body.light .config-box{
+  background:#f2f2f2;
+}
+
+body.dark .config-box{
+  background:#1e1e1e;
+}
+
+.oculto{
+  display:none;
+}
+
+.config-grid{
+  display:grid;
+  grid-template-columns: repeat(auto-fit,minmax(180px,1fr));
+  gap:15px;
+}
+
+.campo{
+  display:flex;
+  flex-direction:column;
+  gap:5px;
+}
+
+input, select{
+  padding:6px;
+  border-radius:5px;
+  border:1px solid #bbb;
+}
+
+.btn-principal{
+  background:#2ecc71;
+  border:none;
+  padding:10px 20px;
+  font-weight:bold;
+  cursor:pointer;
+  border-radius:8px;
+  transition:0.2s;
+}
+
+.btn-principal:hover{
+  background:#27ae60;
+}
+
+.btn-principal:disabled{
+  opacity:0.6;
+  cursor:not-allowed;
+}
+
+.controles{
+  display:flex;
+  align-items:center;
+  gap:15px;
+  margin:20px 0;
+}
+
+.hud{
+  font-size:22px;
+  margin-bottom:20px;
+}
+
+.fila{
+  display:flex;
+  gap:12px;
+  margin:15px 0;
+  flex-wrap:wrap;
+  align-items:center;
+}
+
+.cuadro{
+  width:65px;
+  height:65px;
+  border-radius:10px;
+  border:3px solid rgba(0,0,0,0.45);
+  background: transparent;
+}
+
+body.dark .cuadro{
+  border:3px solid rgba(255,255,255,0.55);
+}
+
+.cuadro.colorBtn{
+  cursor:pointer;
+  transition:transform 0.08s;
+}
+
+.cuadro.colorBtn:hover{
+  transform:scale(1.05);
+}
+
+.tabla{
+  width:100%;
+  border-collapse:collapse;
+  margin-top:10px;
+}
+
+.tabla th, .tabla td{
+  border:1px solid rgba(0,0,0,0.2);
+  padding:8px 10px;
+  text-align:left;
+}
+
+body.dark .tabla th, body.dark .tabla td{
+  border:1px solid rgba(255,255,255,0.25);
+}
+
+.ranking-control{
+  margin-top:25px;
+  font-size:14px;
+}
+
+#rankingContainer{
+  margin-top:10px;
+}
