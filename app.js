@@ -21,7 +21,7 @@
   const CONFIG_DEFAULT = {
     tiempoTotal: 30,
     longitud: 4,
-    cantColores: 4,
+    cantColores: 6,
     tiempoVisible: 3,
     permitirRepetidos: false,
     modoFondo: "light"
