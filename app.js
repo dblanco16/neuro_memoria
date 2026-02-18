@@ -34,8 +34,6 @@
   let score = 0;
 
   let coloresPartida = [];
-  let coloresPartidaSet = null;
-
   let secuencia = [];
   let inputJugador = [];
 
@@ -71,48 +69,78 @@
   const inputRepetidos = document.getElementById("permitirRepetidos");
   const inputModoFondo = document.getElementById("modoFondo");
 
-  /* CONFIG */
+  /* =========================
+     CONFIG
+  ========================= */
   function loadConfig() {
     const raw = localStorage.getItem(STORAGE_CONFIG);
-    if (!raw) return CONFIG_DEFAULT;
-    try { return { ...CONFIG_DEFAULT, ...JSON.parse(raw) }; }
-    catch { return CONFIG_DEFAULT; }
+    if (!raw) return { ...CONFIG_DEFAULT };
+    try {
+      return { ...CONFIG_DEFAULT, ...JSON.parse(raw) };
+    } catch {
+      return { ...CONFIG_DEFAULT };
+    }
+  }
+
+  function clampInt(n, min, max, fallback) {
+    const x = parseInt(n, 10);
+    if (!Number.isFinite(x)) return fallback;
+    return Math.max(min, Math.min(max, x));
+  }
+
+  function aplicarConfigUI() {
+    // ✅ Esto es lo que faltaba: setear inputs con la config actual
+    inputTiempoTotal.value = config.tiempoTotal;
+    inputLongitud.value = config.longitud;
+    inputCantColores.value = config.cantColores;
+    inputTiempoVisible.value = config.tiempoVisible;
+    inputRepetidos.checked = !!config.permitirRepetidos;
+    inputModoFondo.value = (config.modoFondo === "dark") ? "dark" : "light";
   }
 
   function saveConfig() {
+    const tiempoTotal = clampInt(inputTiempoTotal.value, 10, 3600, CONFIG_DEFAULT.tiempoTotal);
+    const cantColores = clampInt(inputCantColores.value, 3, 10, CONFIG_DEFAULT.cantColores);
+    const longitud = clampInt(inputLongitud.value, 2, 20, CONFIG_DEFAULT.longitud);
+    const tiempoVisible = clampInt(inputTiempoVisible.value, 1, 10, CONFIG_DEFAULT.tiempoVisible);
+
     config = {
-      tiempoTotal: parseInt(inputTiempoTotal.value) || CONFIG_DEFAULT.tiempoTotal,
-      longitud: parseInt(inputLongitud.value) || CONFIG_DEFAULT.longitud,
-      cantColores: parseInt(inputCantColores.value) || CONFIG_DEFAULT.cantColores,
-      tiempoVisible: parseInt(inputTiempoVisible.value) || CONFIG_DEFAULT.tiempoVisible,
-      permitirRepetidos: inputRepetidos.checked,
-      modoFondo: inputModoFondo.value
+      tiempoTotal,
+      cantColores,
+      longitud,
+      tiempoVisible,
+      permitirRepetidos: !!inputRepetidos.checked,
+      modoFondo: (inputModoFondo.value === "dark") ? "dark" : "light"
     };
 
     localStorage.setItem(STORAGE_CONFIG, JSON.stringify(config));
     aplicarTema();
+    aplicarConfigUI();
     actualizarTextoConfig();
   }
 
   function aplicarTema() {
-    body.classList.remove("light","dark");
+    body.classList.remove("light", "dark");
     body.classList.add(config.modoFondo);
   }
 
   function actualizarTextoConfig() {
     configTexto.innerText =
-      `Tiempo: ${config.tiempoTotal}s | Secuencia: ${config.longitud} | Colores: ${config.cantColores}`;
+      `Tiempo: ${config.tiempoTotal}s | Secuencia: ${config.longitud} | Colores: ${config.cantColores} | Visible: ${config.tiempoVisible}s | Repetidos: ${config.permitirRepetidos ? "Sí" : "No"} | Fondo: ${config.modoFondo === "light" ? "Blanco" : "Negro"}`;
   }
 
-  /* RANKING */
+  /* =========================
+     RANKING
+  ========================= */
   function loadRanking() {
     const raw = localStorage.getItem(STORAGE_RANKING);
     if (!raw) return [];
-    return JSON.parse(raw);
+    try { return JSON.parse(raw) || []; }
+    catch { return []; }
   }
 
   function saveRanking(data) {
-    localStorage.setItem(STORAGE_RANKING, JSON.stringify(data.slice(0,10)));
+    localStorage.setItem(STORAGE_RANKING, JSON.stringify(data.slice(0, 10)));
   }
 
   function agregarRanking(scoreFinal) {
@@ -125,175 +153,288 @@
 
   function renderRanking() {
     const data = loadRanking();
-    rankingBody.innerHTML="";
-    data.forEach(item=>{
-      const tr=document.createElement("tr");
-      tr.innerHTML=`<td>${item.nombre}</td><td>${item.score}</td>`;
+    rankingBody.innerHTML = "";
+    data.forEach(item => {
+      const tr = document.createElement("tr");
+      tr.innerHTML = `<td>${escapeHtml(item.nombre)}</td><td>${item.score}</td>`;
       rankingBody.appendChild(tr);
     });
   }
 
+  function escapeHtml(s) {
+    return String(s)
+      .replaceAll("&", "&amp;")
+      .replaceAll("<", "&lt;")
+      .replaceAll(">", "&gt;")
+      .replaceAll('"', "&quot;")
+      .replaceAll("'", "&#039;");
+  }
+
   /* VISIBILIDAD RANKING */
-  function loadRankingVisibility(){
+  function loadRankingVisibility() {
     const saved = localStorage.getItem(STORAGE_RANKING_VISIBLE);
-    if(saved === null) return true;
+    if (saved === null) return true;
     return saved === "true";
   }
 
-  function saveRankingVisibility(val){
-    localStorage.setItem(STORAGE_RANKING_VISIBLE, val);
+  function saveRankingVisibility(val) {
+    localStorage.setItem(STORAGE_RANKING_VISIBLE, String(val));
   }
 
-  function aplicarVisibilidadRanking(){
+  function aplicarVisibilidadRanking() {
     const visible = chkRanking.checked;
     rankingContainer.style.display = visible ? "block" : "none";
     saveRankingVisibility(visible);
   }
 
-  /* UTIL */
+  /* =========================
+     UTIL
+  ========================= */
   function shuffle(arr) {
-    return [...arr].sort(()=>Math.random()-0.5);
+    return [...arr].sort(() => Math.random() - 0.5);
   }
 
   function colorVacio() {
-    return (config.modoFondo==="dark")?"#000000":"#FFFFFF";
+    return (config.modoFondo === "dark") ? "#000000" : "#FFFFFF";
   }
 
-  /* PALETA FIJA */
-  function prepararColoresPartida(){
-    coloresPartida = shuffle(PALETA_BASE).slice(0,config.cantColores);
-    coloresPartidaSet = new Set(coloresPartida);
+  /* =========================
+     JUEGO
+  ========================= */
+  function prepararColoresPartida() {
+    const cant = Math.max(3, Math.min(config.cantColores, PALETA_BASE.length));
+    coloresPartida = shuffle(PALETA_BASE).slice(0, cant);
   }
 
-  function generarSecuencia(){
-    secuencia=[];
-    const disp=[...coloresPartida];
-    for(let i=0;i<config.longitud;i++){
-      const r=Math.floor(Math.random()*disp.length);
+  function generarSecuencia() {
+    secuencia = [];
+    const disp = [...coloresPartida];
+
+    if (!config.permitirRepetidos && config.longitud > disp.length) {
+      return false;
+    }
+
+    for (let i = 0; i < config.longitud; i++) {
+      const r = Math.floor(Math.random() * disp.length);
       secuencia.push(disp[r]);
-      if(!config.permitirRepetidos) disp.splice(r,1);
+      if (!config.permitirRepetidos) disp.splice(r, 1);
     }
     return true;
   }
 
-  function dibujarFilaVacia(contenedor,largo){
-    contenedor.innerHTML="";
-    for(let i=0;i<largo;i++){
-      const div=document.createElement("div");
-      div.className="cuadro";
-      div.style.background=colorVacio();
+  function dibujarFilaVacia(contenedor, largo) {
+    contenedor.innerHTML = "";
+    for (let i = 0; i < largo; i++) {
+      const div = document.createElement("div");
+      div.className = "cuadro";
+      div.style.background = colorVacio();
       contenedor.appendChild(div);
     }
   }
 
-  function mostrarSecuencia(){
-    secuencia.forEach((c,i)=>{
-      filaSecuencia.children[i].style.background=c;
+  function mostrarSecuencia() {
+    secuencia.forEach((c, i) => {
+      filaSecuencia.children[i].style.background = c;
     });
   }
 
-  function crearTablero(){
-    tablero.innerHTML="";
-    coloresPartida.forEach(color=>{
-      const div=document.createElement("div");
-      div.className="cuadro colorBtn";
-      div.style.background=color;
-      div.addEventListener("click",()=>seleccionarColor(color));
+  function crearTablero() {
+    tablero.innerHTML = "";
+    coloresPartida.forEach(color => {
+      const div = document.createElement("div");
+      div.className = "cuadro colorBtn";
+      div.style.background = color;
+      div.addEventListener("click", () => seleccionarColor(color));
       tablero.appendChild(div);
     });
   }
 
-  function renderJugador(){
-    dibujarFilaVacia(filaJugador,config.longitud);
-    inputJugador.forEach((c,i)=>{
-      filaJugador.children[i].style.background=c;
+  /* BORRADO MOBILE (FIABLE) */
+  function attachDeleteGestures(cell, index) {
+    // Desktop
+    cell.addEventListener("dblclick", (e) => {
+      e.preventDefault();
+      eliminarColor(index);
+    });
+
+    // Mobile: doble tap + long press
+    let lastTapTime = 0;
+    let longPressTimer = null;
+
+    cell.addEventListener("touchstart", () => {
+      longPressTimer = setTimeout(() => {
+        eliminarColor(index);
+      }, 450);
+    }, { passive: true });
+
+    cell.addEventListener("touchend", () => {
+      if (longPressTimer) {
+        clearTimeout(longPressTimer);
+        longPressTimer = null;
+      }
+
+      const now = Date.now();
+      if (now - lastTapTime < 320) {
+        eliminarColor(index);
+        lastTapTime = 0;
+      } else {
+        lastTapTime = now;
+      }
+    }, { passive: true });
+
+    cell.addEventListener("touchmove", () => {
+      if (longPressTimer) {
+        clearTimeout(longPressTimer);
+        longPressTimer = null;
+      }
+    }, { passive: true });
+
+    cell.addEventListener("contextmenu", (e) => e.preventDefault());
+  }
+
+  function renderJugador() {
+    dibujarFilaVacia(filaJugador, config.longitud);
+
+    inputJugador.forEach((c, i) => {
+      const cell = filaJugador.children[i];
+      cell.style.background = c;
+      attachDeleteGestures(cell, i);
     });
   }
 
-  function seleccionarColor(color){
-    if(!jugando || fase!=="respuesta") return;
-    if(inputJugador.length>=config.longitud) return;
+  function seleccionarColor(color) {
+    if (!jugando || fase !== "respuesta") return;
+    if (inputJugador.length >= config.longitud) return;
+
     inputJugador.push(color);
     renderJugador();
-    if(inputJugador.length===secuencia.length) validar();
+
+    if (inputJugador.length === secuencia.length) validar();
   }
 
-  function validar(){
-    const correcta = secuencia.every((v,i)=>v===inputJugador[i]);
-    if(correcta){
+  function eliminarColor(index) {
+    if (!jugando || fase !== "respuesta") return;
+    if (index < 0 || index >= inputJugador.length) return;
+
+    inputJugador.splice(index, 1);
+    renderJugador();
+  }
+
+  function validar() {
+    const correcta = secuencia.every((v, i) => v === inputJugador[i]);
+    if (correcta) {
       score++;
-      puntajeSpan.innerText=score;
+      puntajeSpan.innerText = String(score);
     }
     iniciarRonda();
   }
 
-  function iniciarRonda(){
-    fase="memoria";
-    generarSecuencia();
+  function iniciarRonda() {
+    fase = "memoria";
 
-    dibujarFilaVacia(filaSecuencia,config.longitud);
-    dibujarFilaVacia(filaJugador,config.longitud);
+    if (!generarSecuencia()) {
+      alert("Configuración inválida: sin repetidos, la longitud no puede superar la cantidad de colores.");
+      detenerJuego(true);
+      return;
+    }
+
+    dibujarFilaVacia(filaSecuencia, config.longitud);
+    dibujarFilaVacia(filaJugador, config.longitud);
     crearTablero();
 
-    filaJugador.style.visibility="hidden";
-    tablero.style.visibility="hidden";
+    // Ocultar durante memoria
+    filaJugador.style.visibility = "hidden";
+    tablero.style.visibility = "hidden";
 
     mostrarSecuencia();
 
-    setTimeout(()=>{
-      dibujarFilaVacia(filaSecuencia,config.longitud);
-      fase="respuesta";
-      inputJugador=[];
-      filaJugador.style.visibility="visible";
-      tablero.style.visibility="visible";
-    },config.tiempoVisible*1000);
+    setTimeout(() => {
+      dibujarFilaVacia(filaSecuencia, config.longitud);
+      fase = "respuesta";
+      inputJugador = [];
+      renderJugador();
+
+      filaJugador.style.visibility = "visible";
+      tablero.style.visibility = "visible";
+    }, config.tiempoVisible * 1000);
   }
 
-  function iniciarTimer(){
-    tiempoFin=Date.now()+config.tiempoTotal*1000;
-    timerInterval=setInterval(()=>{
-      const restante=Math.max(0,Math.ceil((tiempoFin-Date.now())/1000));
-      tiempoSpan.innerText=restante;
-      if(restante<=0) detenerJuego(true);
-    },250);
+  function iniciarTimer() {
+    tiempoFin = Date.now() + config.tiempoTotal * 1000;
+
+    clearInterval(timerInterval);
+    timerInterval = setInterval(() => {
+      const restante = Math.max(0, Math.ceil((tiempoFin - Date.now()) / 1000));
+      tiempoSpan.innerText = String(restante);
+      if (restante <= 0) detenerJuego(true);
+    }, 250);
   }
 
-  function iniciarJuego(){
-    jugando=true;
-    score=0;
-    puntajeSpan.innerText=0;
+  function iniciarJuego() {
+    if (jugando) return;
+
+    jugando = true;
+    fase = "memoria";
+    score = 0;
+
+    puntajeSpan.innerText = "0";
+    btnAccion.innerText = "Detener";
+
+    btnToggleConfig.disabled = true;
+    nombreInput.disabled = true;
+
     prepararColoresPartida();
-    btnAccion.innerText="Detener";
     iniciarTimer();
     iniciarRonda();
   }
 
-  function detenerJuego(guardar){
-    jugando=false;
+  function detenerJuego(guardar) {
+    jugando = false;
+    fase = "memoria";
+
     clearInterval(timerInterval);
-    btnAccion.innerText="Iniciar";
-    if(guardar) agregarRanking(score);
+    timerInterval = null;
+
+    btnAccion.innerText = "Iniciar";
+    btnToggleConfig.disabled = false;
+    nombreInput.disabled = false;
+
+    filaJugador.style.visibility = "visible";
+    tablero.style.visibility = "visible";
+
+    if (guardar) agregarRanking(score);
   }
 
-  /* EVENTOS */
-  btnAccion.addEventListener("click",()=>{
-    if(jugando) detenerJuego(true);
+  /* =========================
+     EVENTOS UI
+  ========================= */
+  btnAccion.addEventListener("click", () => {
+    if (jugando) detenerJuego(true);
     else iniciarJuego();
   });
 
-  btnToggleConfig.addEventListener("click",()=>{
-    if(!jugando) configPanel.classList.toggle("oculto");
+  btnToggleConfig.addEventListener("click", () => {
+    if (jugando) return;
+
+    // ✅ IMPORTANTÍSIMO: cuando abrís configuración, precargar inputs actuales
+    aplicarConfigUI();
+
+    configPanel.classList.toggle("oculto");
   });
 
-  btnGuardarConfig.addEventListener("click",()=>{
+  btnGuardarConfig.addEventListener("click", () => {
+    if (jugando) return;
     saveConfig();
     configPanel.classList.add("oculto");
   });
 
-  chkRanking.addEventListener("change",aplicarVisibilidadRanking);
+  chkRanking.addEventListener("change", aplicarVisibilidadRanking);
 
-  /* INIT */
+  /* =========================
+     INIT
+  ========================= */
   aplicarTema();
+  aplicarConfigUI();
   actualizarTextoConfig();
   renderRanking();
 

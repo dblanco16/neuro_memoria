@@ -2,16 +2,17 @@
 <html lang="es">
 <head>
   <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>Memoria de Trabajo</title>
-	<link rel="icon" href="iconos/favicon.ico" sizes="any">
-	<link rel="icon" type="image/png" sizes="32x32" href="iconos/favicon-32.png">
-	<link rel="icon" type="image/png" sizes="16x16" href="iconos/favicon-16.png">
 
-	<link rel="apple-touch-icon" sizes="180x180" href="iconos/apple-touch-icon.png">
+  <link rel="icon" href="iconos/favicon.ico" sizes="any">
+  <link rel="icon" type="image/png" sizes="32x32" href="iconos/favicon-32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="iconos/favicon-16.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="iconos/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="192x192" href="iconos/android-chrome-192x192.png">
+  <link rel="icon" type="image/png" sizes="512x512" href="iconos/android-chrome-512x512.png">
 
-	<link rel="icon" type="image/png" sizes="192x192" href="iconos/android-chrome-192x192.png">
-	<link rel="icon" type="image/png" sizes="512x512" href="iconos/android-chrome-512x512.png">
-  <link rel="stylesheet" href="styles.css">  
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
 
@@ -21,7 +22,7 @@
   <div class="header">
     <img src="logo3_sf.png" class="logo" alt="logo">
     <div class="header-text">
-      <h1>Entrenamiento de Memoria de Trabajo</h1>
+      <h1>Entrenamiento Memoria de Trabajo</h1>
 
       <div class="config-actual">
         <span id="configTexto"></span>
@@ -37,23 +38,23 @@
     <div class="config-grid">
 
       <div class="campo">
-        <label>Tiempo total (seg)</label>
-        <input id="tiempoTotal" type="number" min="10">
+        <label>Tiempo total (segundos)</label>
+        <input id="tiempoTotal" type="number" min="10" inputmode="numeric">
       </div>
 
       <div class="campo">
         <label>Largo secuencia</label>
-        <input id="longitud" type="number" min="2" max="20">
+        <input id="longitud" type="number" min="2" max="20" inputmode="numeric">
       </div>
 
       <div class="campo">
-        <label>Cant colores</label>
-        <input id="cantColores" type="number" min="3" max="10">
+        <label>Cantidad colores</label>
+        <input id="cantColores" type="number" min="3" max="10" inputmode="numeric">
       </div>
 
       <div class="campo">
-        <label>Seg visible</label>
-        <input id="tiempoVisible" type="number" min="1" max="10">
+        <label>Segundos visible</label>
+        <input id="tiempoVisible" type="number" min="1" max="10" inputmode="numeric">
       </div>
 
       <div class="campo">
@@ -64,7 +65,7 @@
       </div>
 
       <div class="campo">
-        <label>Modo fondo</label>
+        <label>Fondo</label>
         <select id="modoFondo">
           <option value="light">Blanco</option>
           <option value="dark">Negro</option>
@@ -83,7 +84,7 @@
   <!-- CONTROLES -->
   <div class="controles">
     <label>Nombre</label>
-    <input id="nombre" maxlength="20" placeholder="anonimo">
+    <input id="nombre" maxlength="20" placeholder="Anonimo">
     <button id="btnAccion" class="btn-principal">Iniciar</button>
   </div>
 
@@ -97,7 +98,7 @@
     <div id="filaSecuencia" class="fila"></div>
 
     <h3>Tu secuencia</h3>
-    <p>Doble click o touch largo para borrar</p>
+    <p class="ayuda">Borrar: touch largo / doble click</p>
     <div id="filaJugador" class="fila"></div>
 
     <h3>Colores disponibles</h3>
