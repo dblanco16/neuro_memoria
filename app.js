@@ -173,7 +173,7 @@
   /* VISIBILIDAD RANKING */
   function loadRankingVisibility() {
     const saved = localStorage.getItem(STORAGE_RANKING_VISIBLE);
-    if (saved === null) return true;
+    if (saved === null) return false;
     return saved === "true";
   }
 

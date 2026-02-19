@@ -97,7 +97,7 @@ input, select{
 }
 
 .btn-principal{
-  background:#2ecc71;
+  background:#B36CFF;
   border:none;
   padding:12px 18px;
   font-weight:bold;
@@ -105,9 +105,10 @@ input, select{
   border-radius:12px;
   transition:0.2s;
   font-size:16px;
+  color: white;
 }
 
-.btn-principal:hover{ background:#27ae60; }
+.btn-principal:hover{ background:#7555E5; }
 .btn-principal:disabled{ opacity:0.6; cursor:not-allowed; }
 
 .botones{
