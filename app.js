@@ -385,7 +385,7 @@ function shuffle(arr) {
 	  score = 0;
 
 	  puntajeSpan.innerText = "0";
-	  btnAccion.innerText = "Detener";
+	  btnAccion.innerText = "Finalizar";
 
 	  btnToggleConfig.disabled = true;
 	  nombreInput.disabled = true;
