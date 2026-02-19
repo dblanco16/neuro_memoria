@@ -4,6 +4,8 @@
   const STORAGE_CONFIG = "mt_config_v13";
   const STORAGE_RANKING = "mt_ranking_v13";
   const STORAGE_RANKING_VISIBLE = "mt_ranking_visible_v1";
+  const overlay = document.getElementById("overlayCountdown");
+  const countdownNumero = document.getElementById("countdownNumero");
 
   const PALETA_BASE = [
     "#FF0000",
@@ -370,23 +372,23 @@
     }, 250);
   }
 
-  function iniciarJuego() {
-    if (jugando) return;
+	function iniciarJuego() {
+	  if (jugando) return;
 
-    jugando = true;
-    fase = "memoria";
-    score = 0;
+	  jugando = true;
+	  fase = "memoria";
+	  score = 0;
 
-    puntajeSpan.innerText = "0";
-    btnAccion.innerText = "Detener";
+	  puntajeSpan.innerText = "0";
+	  btnAccion.innerText = "Detener";
 
-    btnToggleConfig.disabled = true;
-    nombreInput.disabled = true;
+	  btnToggleConfig.disabled = true;
+	  nombreInput.disabled = true;
 
-    prepararColoresPartida();
-    iniciarTimer();
-    iniciarRonda();
-  }
+	  prepararColoresPartida();
+
+	  iniciarCuentaRegresiva();
+	}
 
   function detenerJuego(guardar) {
     jugando = false;
@@ -404,6 +406,27 @@
 
     if (guardar) agregarRanking(score);
   }
+
+	function iniciarCuentaRegresiva() {
+	  let contador = 3;
+
+	  overlay.classList.remove("oculto");
+	  countdownNumero.innerText = contador;
+
+	  const intervalo = setInterval(() => {
+		contador--;
+
+		if (contador > 0) {
+		  countdownNumero.innerText = contador;
+		} else {
+		  clearInterval(intervalo);
+		  overlay.classList.add("oculto");
+
+		  iniciarTimer();
+		  iniciarRonda();
+		}
+	  }, 1000);
+	}
 
   /* =========================
      EVENTOS UI
